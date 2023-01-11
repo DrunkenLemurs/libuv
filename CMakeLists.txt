@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.15)
 project(libuv LANGUAGES C)
 
 cmake_policy(SET CMP0057 NEW) # Enable IN_LIST operator
@@ -133,7 +133,12 @@ set(uv_sources
     src/version.c)
 
 if(WIN32)
-  list(APPEND uv_defines WIN32_LEAN_AND_MEAN _WIN32_WINNT=0x0602)
+  list(APPEND uv_defines WIN32_LEAN_AND_MEAN)
+  set(LIBUV_WINVER "0x0602" CACHE STRING "") # 0x0602 --> Windows 8
+  if(NOT LIBUV_WINVER GREATER_EQUAL "0x0602")
+      message(FATAL_ERROR " LIBUV_WINVER must be greater or equal to 0x0602")
+  endif()
+  list(APPEND uv_defines WINVER=${LIBUV_WINVER} _WIN32_WINNT=${LIBUV_WINVER})
   list(APPEND uv_libraries
        psapi
        user32
@@ -409,7 +414,7 @@ endif()
 target_link_libraries(uv ${uv_libraries})
 
 add_library(uv_a STATIC ${uv_sources})
-target_compile_definitions(uv_a PRIVATE ${uv_defines})
+target_compile_definitions(uv_a PRIVATE $<$<BOOL:${LIBUV_STATIC_LIB_EXPORTS}>:BUILDING_UV_SHARED=1> ${uv_defines})
 target_compile_options(uv_a PRIVATE ${uv_cflags})
 target_include_directories(uv_a
   PUBLIC
