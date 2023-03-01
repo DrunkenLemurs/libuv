@@ -565,7 +565,14 @@ int uv__convert_to_localhost_if_unspecified(const struct sockaddr* addr,
     if (memcmp(&dest6->sin6_addr,
                &uv_addr_ip6_any_.sin6_addr,
                sizeof(uv_addr_ip6_any_.sin6_addr)) == 0) {
+      #ifdef __clang__
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wmissing-braces"
+      #endif
       struct in6_addr init_sin6_addr = IN6ADDR_LOOPBACK_INIT;
+      #ifdef __clang__
+        #pragma clang diagnostic pop
+      #endif
       dest6->sin6_addr = init_sin6_addr;
     }
     return 0;

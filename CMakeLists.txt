@@ -116,12 +116,16 @@ check_c_compiler_flag(-Wall UV_LINT_WALL) # DO NOT use this under MSVC
 check_c_compiler_flag(-Wno-unused-parameter UV_LINT_NO_UNUSED_PARAMETER)
 check_c_compiler_flag(-Wstrict-prototypes UV_LINT_STRICT_PROTOTYPES)
 check_c_compiler_flag(-Wextra UV_LINT_EXTRA)
+check_c_compiler_flag(-Wno-unused-but-set-variable UV_LINT_NO_UNUSED_BUT_SET_VARIABLE)
+check_c_compiler_flag(-Wno-unused-variable UV_LINT_NO_UNUSED_VARIABLE)
 
 check_c_compiler_flag(/utf-8 UV_LINT_UTF8_MSVC)
 
 set(lint-no-unused-parameter $<$<BOOL:${UV_LINT_NO_UNUSED_PARAMETER}>:-Wno-unused-parameter>)
 set(lint-strict-prototypes $<$<BOOL:${UV_LINT_STRICT_PROTOTYPES}>:-Wstrict-prototypes>)
 set(lint-extra $<$<BOOL:${UV_LINT_EXTRA}>:-Wextra>)
+set(lint-no-unused-but-set-variable-clangcl $<$<AND:$<BOOL:${UV_LINT_NO_UNUSED_BUT_SET_VARIABLE}>,${is-msvc}>:-Wno-unused-but-set-variable>)
+set(lint-no-unused-variable-clangcl $<$<AND:$<BOOL:${UV_LINT_NO_UNUSED_VARIABLE}>,${is-msvc}>:-Wno-unused-variable>)
 set(lint-w4 $<$<BOOL:${UV_LINT_W4}>:/W4>)
 set(lint-no-unused-parameter-msvc $<$<BOOL:${UV_LINT_NO_UNUSED_PARAMETER_MSVC}>:/wd4100>)
 set(lint-no-conditional-constant-msvc $<$<BOOL:${UV_LINT_NO_CONDITIONAL_CONSTANT_MSVC}>:/wd4127>)
@@ -142,6 +146,8 @@ string(CONCAT lint-default $<
 set(lint-utf8-msvc $<$<BOOL:${UV_LINT_UTF8_MSVC}>:/utf-8>)
 
 list(APPEND uv_cflags ${lint-strict-prototypes} ${lint-extra} ${lint-default} ${lint-w4})
+list(APPEND uv_cflags ${lint-no-unused-but-set-variable-clangcl})
+list(APPEND uv_cflags ${lint-no-unused-variable-clangcl})
 list(APPEND uv_cflags ${lint-no-unused-parameter})
 list(APPEND uv_cflags ${lint-no-unused-parameter-msvc})
 list(APPEND uv_cflags ${lint-no-conditional-constant-msvc})

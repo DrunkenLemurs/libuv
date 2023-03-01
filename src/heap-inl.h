@@ -18,7 +18,7 @@
 
 #include <stddef.h>  /* NULL */
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
 # define HEAP_EXPORT(declaration) __attribute__((unused)) static declaration
 #else
 # define HEAP_EXPORT(declaration) static declaration

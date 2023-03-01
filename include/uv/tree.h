@@ -27,7 +27,7 @@
 #define  UV_TREE_H_
 
 #ifndef UV__UNUSED
-# if __GNUC__
+# if __GNUC__ || __clang__
 #  define UV__UNUSED __attribute__((unused))
 # else
 #  define UV__UNUSED
